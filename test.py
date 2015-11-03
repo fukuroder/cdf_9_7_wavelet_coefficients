@@ -8,28 +8,30 @@ sympy.mpmath.mp.prec = 256
 
 #
 def cascade_wavelet(phi, gg):
-    x = [k/128.0 - 3 for k in range((128*7))]
+    div = 256
     sqrt2 = sympy.mpmath.sqrt(2)
 
-    psi = numpy.zeros(128*7)
+    x = numpy.linspace(-3, 4, div*7+1)
+    psi = numpy.zeros(div*7+1)
     for k,g in enumerate(gg):
         for i in range(len(psi)):
-            if 0 <= 2*i-128*k and 2*i-128*k < len(phi):
-                psi[i] += sqrt2*g*phi[2*i-128*k]
+            if 0 <= 2*i-div*k < len(phi):
+                psi[i] += sqrt2*g*phi[2*i-div*k]
     return x, psi
 #
 def cascade_scaling(h):
-    phi =  numpy.array( [1.0/(len(h)-1)]*(len(h)-1)*128 )
-    center = (len(h)-1)/2
-    x = [k/128.0 - center for k in range(len(phi))]
+    div = 256
     sqrt2 = sympy.mpmath.sqrt(2)
 
+    c = (len(h)-1)/2
+    x = numpy.linspace(-c, c, (len(h)-1)*div)
+    phi = numpy.ones((len(h)-1)*div)/sympy.mpmath.mpf(len(h)-1)
     for _ in range(100):
         phi2 = numpy.zeros(len(phi))
         for k,hk in enumerate(h):
             for i in range(len(phi)):
-                if 0 <= 2*i-128*k and 2*i-128*k < len(phi):
-                    phi2[i] += sqrt2*hk*phi[2*i-128*k]
+                if 0 <= 2*i-div*k < len(phi):
+                    phi2[i] += sqrt2*hk*phi[2*i-div*k]
 
         if numpy.linalg.norm( phi - phi2 ) < 1.0e-10:
             return x, phi2
