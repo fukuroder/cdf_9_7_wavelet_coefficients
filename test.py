@@ -1,4 +1,5 @@
-import numpy
+import numpy as np
+import scipy.signal
 import sympy
 import mpmath
 import matplotlib.pyplot as plt
@@ -7,38 +8,23 @@ import matplotlib.pyplot as plt
 mpmath.mp.prec = 256
 
 #
-def cascade_wavelet(phi, gg):
-    div = 2**7
-    sqrt2 = mpmath.sqrt(2)
+def cascade_wavelet(phi, g, J=7):
+    div = 2**J
+    sqrt2 = np.sqrt(2)
 
-    x = numpy.linspace(-3, 4, div*7+1)
-    psi = numpy.zeros(div*7+1)
-    for k,g in enumerate(gg):
+    x = np.linspace(-3, 4, div*7+1)
+    psi = np.zeros(div*7+1)
+    for k, gk in enumerate(g):
         for i in range(len(psi)):
             if 0 <= 2*i-div*k < len(phi):
-                psi[i] += sqrt2*g*phi[2*i-div*k]
+                psi[i] += sqrt2*gk*phi[2*i-div*k]
     return x, psi
 #
-def cascade_scaling(h):
-    div = 2**7
-    sqrt2 = mpmath.sqrt(2)
-
-    c = (len(h)-1)//2
-    x = numpy.linspace(-c, c, (len(h)-1)*div)
-    phi = numpy.ones((len(h)-1)*div)/mpmath.mpf(len(h)-1)
-    for _ in range(100):
-        phi2 = numpy.zeros(len(phi))
-        for k,hk in enumerate(h):
-            for i in range(len(phi)):
-                if 0 <= 2*i-div*k < len(phi):
-                    phi2[i] += sqrt2*hk*phi[2*i-div*k]
-
-        if numpy.linalg.norm( phi - phi2 ) < 1.0e-10:
-            return x, phi2
-        else:
-            phi = phi2
-    else:
-        raise Exception
+def cascade(h, g):
+    phi_x, phi, _ = scipy.signal.cascade(h)
+    phi_x -= (len(h)-1)//2
+    psi_x, psi = cascade_wavelet(phi, g)
+    return phi_x, phi, psi_x, psi
 
 def cdf_9_7():
     # 多項式を作成する q(y) = 20y^3 + 10*y^2 + 4*y + 1
@@ -106,27 +92,20 @@ def main():
     for i, h in enumerate(d_wavelet_coeff):
         mpmath.nprint(h, 40)
 
-    x, phi1 = cascade_scaling(scaling)
-    plt.plot(x, phi1)
+    phi1_x, phi1, psi1_x, psi1 = cascade(scaling, wavelet_coeff)
+    phi2_x, phi2, psi2_x, psi2 = cascade(d_scaling, d_wavelet_coeff)
 
-    x, phi2 = cascade_scaling(d_scaling)
-    plt.plot(x, phi2)
-
+    plt.plot(phi1_x, phi1)
+    plt.plot(phi2_x, phi2)
     plt.grid()
     plt.legend(['CDF9/7 scaling', 'CDF9/7 dual scaling'])
-    #plt.show()
     plt.savefig('cdf_9_7_scaling.png')
     plt.clf()
 
-    x, psi1 = cascade_wavelet(phi1, wavelet_coeff)
-    plt.plot(x, psi1)
-
-    x, psi2 = cascade_wavelet(phi2, d_wavelet_coeff)
-    plt.plot(x, psi2)
-
+    plt.plot(psi1_x, psi1)
+    plt.plot(psi2_x, psi2)
     plt.grid()
     plt.legend(['CDF9/7 wavelet', 'CDF9/7 dual wavelet'])
-    #plt.show()
     plt.savefig('cdf_9_7_wavelet.png')
     plt.clf()
 
