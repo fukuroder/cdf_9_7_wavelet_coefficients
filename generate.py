@@ -43,8 +43,10 @@ def cdf_9_7():
     y = mpmath.polyroots(qy)
 
     # make polynomial using real root
+    y_real = [yk for yk in y if mpmath.im(yk) == 0]
+    assert len(y_real) == 1
     h0z = sympy.sympify('-sqrt(2.0)*(y-y0)/y0') \
-               .subs({'y':'-1/4*z+1/2-1/4/z', 'y0':y[0]})
+               .subs({'y':'-1/4*z+1/2-1/4/z', 'y0':y_real[0]})
 
     # adapt vanishing moments
     hz = (sympy.sympify('z**(-2)*((z+1)/2)**4')*h0z).expand()
@@ -53,8 +55,10 @@ def cdf_9_7():
     scaling_coeff = [hz.coeff('z',k) for k in range(-3,3+1)]
 
     # make polynomial using complex root
+    y_complex = [yk for yk in y if mpmath.im(yk) != 0]
+    assert len(y_complex) == 2
     d_h0z = sympy.sympify('sqrt(2.0)*(y-y1)/y1*(y-y2)/y2') \
-                 .subs({'y':'-1/4*z+1/2-1/4/z', 'y1':y[1], 'y2':y[2]})
+                 .subs({'y':'-1/4*z+1/2-1/4/z', 'y1':y_complex[0], 'y2':y_complex[1]})
 
     # adapt vanishing moments
     d_hz = (sympy.sympify('z**(-2)*((z+1)/2)**4')*d_h0z).expand()
