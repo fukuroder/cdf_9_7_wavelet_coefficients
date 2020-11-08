@@ -7,16 +7,15 @@ import matplotlib.pyplot as plt
 # precition
 mpmath.mp.prec = 256
 
-#
 def cascade_wavelet(phi, h, J):
     div = 2**J
 
-    # get dual wavelet coefficients
+    # get wavelet coefficients
     start = (len(h)-1)//2
     end = start + len(h)
     g = [s*(-1)**k for k,s in zip(range(start, end), h)]
 
-    # make wavelet function
+    # make wavelet
     x = np.linspace(-3, 4, num=div*7, endpoint=False)
     psi = np.zeros(div*7)
     for k, gk in enumerate(g):
@@ -24,7 +23,7 @@ def cascade_wavelet(phi, h, J):
             if 0 <= 2*i-div*k < len(phi):
                 psi[i] += np.sqrt(2)*gk*phi[2*i-div*k]
     return x, psi
-#
+
 def dual_cascade(h, dh, J=7):
     phi_x, phi_y, _ = scipy.signal.cascade(h, J=J)
     phi_x -= (len(h)-1)//2
