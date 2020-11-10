@@ -11,9 +11,8 @@ def cascade_wavelet(phi, h, J):
     div = 2**J
 
     # get wavelet coefficients
-    start = (len(h)-1)//2
-    end = start + len(h)
-    g = [s*(-1)**k for k,s in zip(range(start, end), h)]
+    start = -(len(h)-1)//2
+    g = [s*(-1)**k for k,s in enumerate(h, start)]
 
     # make wavelet
     x = np.linspace(-3, 4, num=div*7, endpoint=False)
