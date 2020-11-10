@@ -1,6 +1,6 @@
 # cdf_9_7_wavelet_coefficients
 
-Cohen–Daubechies–Feauveau wavelets
+Cohen-Daubechies-Feauveau wavelets
 
 || CDF 9/7 scaling coefficients |
 |-|-|
