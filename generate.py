@@ -62,7 +62,7 @@ def cdf_9_7():
     d_hz = (sympy.sympify('z**(-2)*((z+1)/2)**4')*d_h0z).expand()
 
     # get dual scaling coefficients
-    d_scaling_coeff = [sympy.re(d_hz.coeff('z',k)) for k in range(-4,5)]
+    d_scaling_coeff = [sympy.re(d_hz.coeff('z',k)) for k in range(-4,4+1)]
 
     return scaling_coeff, d_scaling_coeff
 
@@ -73,7 +73,7 @@ def main():
     # write scaling coeffients
     lines = []
     lines.append('# CDF 9/7 scaling coefficients\n')
-    for i, h in enumerate(scaling):
+    for h in scaling:
         lines.append(f'{mpmath.nstr(h, 40, min_fixed=0)}\n')
     with open('cdf_9_7_scaling_coefficients.txt', 'w') as f:
         f.writelines(lines)
@@ -81,7 +81,7 @@ def main():
     # write dual scaling coeffients
     lines = []
     lines.append('# CDF 9/7 dual scaling coefficients\n')
-    for i, h in enumerate(d_scaling):
+    for h in d_scaling:
         lines.append(f'{mpmath.nstr(h, 40, min_fixed=0)}\n')
     with open('cdf_9_7_dual_scaling_coefficients.txt', 'w') as f:
         f.writelines(lines)
