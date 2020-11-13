@@ -19,12 +19,12 @@ class TestCDF_9_7(unittest.TestCase):
             x = np.abs(np.sum([s1*s2 for s1, s2 in zip(scaling, d_scaling[M:])]))
             self.assertLess(x, 1.0e-10, f'test orthogonality M={M}')
 
-        # test vanishing moments
+        # test scaling vanishing moments
         for L in range(0, 4):
             x = np.abs(np.sum([(1 if k%2==0 else -1)*s*(k**L) for k, s in enumerate(scaling)]))
             self.assertLess(x, 1.0e-10, f'test scaling vanishing moments L={L}')
 
-        # test vanishing moments
+        # test dual scaling vanishing moments
         for L in range(0, 4):
             x = np.abs(np.sum([(1 if k%2==0 else -1)*s*(k**L) for k, s in enumerate(d_scaling)]))
             self.assertLess(x, 1.0e-10, f'test dual scaling vanishing moments L={L}')
