@@ -15,8 +15,8 @@ class TestCDF_9_7(unittest.TestCase):
         self.assertLess(x, 1.0e-10, f'test dual scaling coefficients summation')
 
         # test orthogonality
-        for M in [1, 3, 5]:
-            x = np.abs(np.sum([s1*s2 for s1, s2 in zip(scaling[M:], d_scaling)]))
+        for M in [3, 5, 7]:
+            x = np.abs(np.sum([s1*s2 for s1, s2 in zip(scaling, d_scaling[M:])]))
             self.assertLess(x, 1.0e-10, f'test orthogonality M={M}')
 
         # test vanishing moments
