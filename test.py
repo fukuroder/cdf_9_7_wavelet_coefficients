@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-class TestDaubechies(unittest.TestCase):
+class TestCDF_9_7(unittest.TestCase):
     def test_all(self):
         scaling = np.loadtxt('cdf_9_7_scaling_coefficients.txt')
         d_scaling = np.loadtxt('cdf_9_7_dual_scaling_coefficients.txt')
